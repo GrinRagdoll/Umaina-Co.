@@ -1,0 +1,28 @@
+<% if (!user) { %>
+<div class="dash-bar">
+    <a href="/webpage2" class="dash-brand">Umaina Co.</a>
+    <a href="/webpage1" class="dash-login-btn">Log in</a>
+</div>
+<% } else { %>
+<div class="dash-bar">
+    <a href="/webpage2" class="dash-brand">Umaina Co.</a>
+    <div class="dash-stats">
+        <span>&#128100; <%= user.username %></span>
+        <span class="dash-pill">Active: <%= stats.activeBids %></span>
+        <span class="dash-pill">Wins: <%= stats.wins %></span>
+        <span class="dash-pill">Losses: <%= stats.losses %></span>
+        <a href="/dashboard" class="dash-link">Bid History</a>
+        <a href="/seller" class="dash-link">Sell an Item</a>
+        <% if (user.isAdmin) { %><a href="/admin" class="dash-link">Admin Panel</a><% } %>
+        <form action="/api/logout" method="POST" style="display:inline;margin:0;">
+            <button class="dash-logout" type="submit">Logout</button>
+        </form>
+    </div>
+</div>
+<div id="notif-banner" class="notif-banner"></div>
+<script>
+    window.currentUsername = <%- JSON.stringify(user.username) %>;
+</script>
+<% } %>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascript/notifications.js"></script>

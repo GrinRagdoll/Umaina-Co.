@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Umaina Co. -- Checkout</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('partials/dashboardBar', { user: user, stats: stats }) %>
+
+    <div class="container-small checkout-box">
+        <a href="/webpage2" class="back">&larr; Back to Listings</a>
+        <h2>Checkout for <%= product.name %></h2>
+        <p><strong>Final Bid / Price:</strong> $<%= product.currentBid %></p>
+        <hr>
+
+        <form action="/checkout/<%= product._id %>" method="POST">
+            <h3>Shipping Address</h3>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="fullName" required>
+            </div>
+            <div class="form-group">
+                <label>Address Line</label>
+                <input type="text" name="addressLine" required>
+            </div>
+            <div class="form-group">
+                <label>City</label>
+                <input type="text" name="city" required>
+            </div>
+            <div class="form-group">
+                <label>Postal Code</label>
+                <input type="text" name="postalCode" required>
+            </div>
+            <div class="form-group">
+                <label>Country</label>
+                <input type="text" name="country" required>
+            </div>
+
+            <h3>Payment Method</h3>
+            <div class="form-group">
+                <select name="paymentMethod" required>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="PayPal">PayPal</option>
+                    <option value="Cash on Delivery">Cash on Delivery</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary">Complete Order & View Receipt</button>
+        </form>
+    </div>
+</body>
+</html>

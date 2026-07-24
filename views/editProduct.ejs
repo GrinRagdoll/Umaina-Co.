@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit <%= product.name %></title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('partials/dashboardBar', { user: user, stats: stats }) %>
+    <div class="container-small">
+        <a href="/admin" class="back">&larr; Back to Admin Panel</a>
+        <h2>Edit <%= product.name %></h2>
+        <% if (product.imageUrl) { %>
+            <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="edit-preview-img">
+        <% } %>
+        <form action="/api/admin/products/<%= product._id %>/update" method="POST">
+            <label>Name</label>
+            <input type="text" name="name" value="<%= product.name %>" required>
+            <label>Starting Price</label>
+            <input type="number" name="startingPrice" value="<%= product.startingPrice %>" required>
+            <label>Buy-Now Price</label>
+            <input type="number" name="buyNowPrice" value="<%= product.buyNowPrice %>" required>
+            <label>Image URL</label>
+            <input type="text" name="imageUrl" value="<%= product.imageUrl || '' %>" placeholder="https://example.com/image.jpg">
+            <label>Reset end time to N hours from now (leave blank to keep current timer)</label>
+            <input type="number" name="durationHours" step="0.1" placeholder="e.g. 3">
+            <button type="submit">Save Changes</button>
+        </form>
+
+        <h3>Manually Adjust Current Bid</h3>
+        <form action="/api/admin/products/<%= product._id %>/adjust-bid" method="POST">
+            <label>New current bid amount</label>
+            <input type="number" name="amount" value="<%= product.currentBid %>" required>
+            <label>Set highest bidder (username)</label>
+            <input type="text" name="username" value="<%= product.highestBidder || '' %>" placeholder="e.g. Ellah">
+            <button type="submit">Apply Adjustment</button>
+        </form>
+    </div>
+</body>
+</html>

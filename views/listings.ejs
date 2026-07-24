@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Umaina Co. — Listings</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('partials/dashboardBar', { user: user, stats: stats }) %>
+    <div class="container">
+        <a href="/" class="back">&larr; Back to Home</a>
+        <h2>Active Auctions (<%= products.length %>)</h2>
+        <div class="grid">
+            <% products.forEach(function(p) { %>
+                <div class="card">
+                    <% if (p.imageUrl) { %>
+                        <img class="product-img" src="<%= p.imageUrl %>" alt="<%= p.name %>">
+                    <% } else { %>
+                        <div class="img-placeholder">Image</div>
+                    <% } %>
+                    <h3><%= p.name %></h3>
+                    <p class="seller-line"><%= p.sellerUsername ? 'Seller: ' + p.sellerUsername : 'Official Listing' %></p>
+                    <p class="price">Current bid: $<%= p.currentBid %>.00</p>
+                    <p class="bidder"><%= p.highestBidder ? 'Highest bidder: ' + p.highestBidder : 'No bids yet' %></p>
+                    <p class="status" style="color: <%= p.status === 'active' ? '#5cc98a' : '#e8c563' %>">
+                        <%= p.status === 'active' ? 'Active' : (p.status === 'sold' ? 'Sold (Buy Now)' : 'Ended') %>
+                    </p>
+                    <% if (p.status === 'active') { %>
+                        <p class="timer" data-endtime="<%= p.endTime.toISOString() %>">Loading time left...</p>
+                    <% } else { %>
+                        <p class="winner"><%= p.winner ? 'Winner: ' + p.winner : 'No bids placed' %></p>
+                    <% } %>
+                    <a href="/auction?id=<%= p._id %>" class="btn"><%= p.status === 'active' ? 'Join Auction' : 'View Result' %></a>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+    <script src="/javascript/listingsTimers.js"></script>
+</body>
+</html>

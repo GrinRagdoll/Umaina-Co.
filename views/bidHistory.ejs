@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Umaina Co. -- My Bid History</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('partials/dashboardBar', { user: user, stats: stats }) %>
+    <div class="container">
+        <a href="/webpage2" class="back">&larr; Back to Listings</a>
+        <h2>My Wins & Orders</h2>
+        <div class="panel">
+            <table>
+                <thead>
+                    <tr><th>Product</th><th>Amount Won</th><th>Order Status</th><th>Payment</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    <% if (wonAuctions.length === 0) { %>
+                        <tr><td colspan="5">You haven't won any auctions yet.</td></tr>
+                    <% } else { %>
+                        <% wonAuctions.forEach(function(w) { %>
+                            <tr>
+                                <td><%= w.name %></td>
+                                <td>$<%= w.currentBid %></td>
+                                <td><%= w.orderStatus || 'pending' %></td>
+                                <td><%= w.paymentStatus || 'unpaid' %></td>
+                                <td>
+                                    <% if (w.orderStatus === 'pending' || !w.orderStatus) { %>
+                                        <a href="/checkout/<%= w._id %>" class="mini-btn">Proceed to Checkout</a>
+                                    <% } else { %>
+                                        <a href="/invoice/<%= w._id %>" class="mini-btn">View Invoice</a>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>My Bid History</h2>
+        <div class="panel">
+            <table>
+                <thead>
+                    <tr><th>Product</th><th>Bid Amount</th><th>Time</th><th>Status</th><th></th></tr>
+                </thead>
+                <tbody>
+                    <% if (stats.bidHistory.length === 0) { %>
+                        <tr><td colspan="5">No bids yet.</td></tr>
+                    <% } else { %>
+                        <% stats.bidHistory.forEach(function(b) { %>
+                            <tr>
+                                <td><%= b.productName %></td>
+                                <td>$<%= b.amount %></td>
+                                <td><%= new Date(b.time).toLocaleString() %></td>
+                                <td><%= b.status %></td>
+                                <td><a href="/auction?id=<%= b.productId %>">View</a></td>
+                            </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

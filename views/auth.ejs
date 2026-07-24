@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Umaina Co. — Sign In</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('partials/dashboardBar', { user: user, stats: stats }) %>
+    <div class="page">
+        <div class="card">
+            <a href="/" class="back">&larr; Back to Home</a>
+
+            <div id="login-section">
+                <h2>Welcome Back</h2>
+                <form action="/api/login" method="POST">
+                    <input type="email" name="email" required placeholder="Email">
+                    <input type="password" name="password" required placeholder="Password">
+                    <button type="submit">Login</button>
+                </form>
+                <p>Need an account? <button class="toggle-btn" onclick="toggleForms()">Sign up</button></p>
+            </div>
+
+            <div id="register-section" class="hidden">
+                <h2>Create an Account</h2>
+                <form action="/api/register" method="POST">
+                    <input type="text" name="fullName" required placeholder="Username">
+                    <input type="email" name="email" required placeholder="Email">
+                    <input type="password" name="password" required placeholder="Password">
+                    <button type="submit">Register</button>
+                </form>
+                <p>Already have an account? <button class="toggle-btn" onclick="toggleForms()">Log in</button></p>
+            </div>
+        </div>
+    </div>
+    <script src="/javascript/authToggle.js"></script>
+</body>
+</html>

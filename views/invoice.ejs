@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<%#
+ wla wla nagulat lang ako meron pala ako extension na pwede mag code ng tagalog tas nag aauto suggest -e
+naiimagine ko, naiwan natin to dito tapos napasa natin kay mam elsie -k
+
+iwan tayo ng easter egg, tapos tignan natin kung chinecheck talaga ni mam bawat program AHHAHAHAHHAHAHA -k
+HAHAHAH easter egg, dev notes, how tho -e
+
+"Hi mam elsie, pag nakita niyo po ito. Have a blessed day po! - ellah n kyler"
+yknow this stuff will get printed sa invoice page right? -e
+
+no -k
+it will bruh HAHAHAHA -e
+
+shems, eh pero comments lang. No? -k
+yes -e
+
+di ako makarequest, need mo gumawa ng bagong terminal -k
+rn?, request ka nga ulet -e
+
+mga baliw ^ 
+
+imma run to see if its working HAHAHAHAHHA -e
+%>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Umaina Co. — Order Receipt</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('partials/dashboardBar', { user: user, stats: stats }) %>
+
+    <div class="container-small invoice-box">
+        <a href="/webpage2" class="back no-print">&larr; Back to Listings</a>
+        <div class="invoice-header">
+            <h2>Umaina Co. — Official Receipt</h2>
+            <p>Status: <span class="badge"><%= (product.orderStatus || 'pending').toUpperCase() %></span></p>
+        </div>
+        <hr>
+
+        <div class="invoice-sections">
+            <div class="section">
+                <h4>Customer & Shipping Details</h4>
+                <p><strong>Name:</strong> <%= product.shippingAddress?.fullName || 'N/A' %></p>
+                <p><strong>Address:</strong> <%= product.shippingAddress?.addressLine || 'N/A' %></p>
+                <p><strong>City / Postal:</strong> <%= product.shippingAddress?.city || '' %>, <%= product.shippingAddress?.postalCode || '' %></p>
+                <p><strong>Country:</strong> <%= product.shippingAddress?.country || 'N/A' %></p>
+            </div>
+
+            <div class="section">
+                <h4>Payment Info</h4>
+                <p><strong>Method:</strong> <%= product.paymentMethod || 'Not specified' %></p>
+                <p><strong>Payment Status:</strong> <%= (product.paymentStatus || 'unpaid').toUpperCase() %></p>
+            </div>
+        </div>
+
+        <h4>Item Summary & Price Breakdown</h4>
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><%= product.name %> (Winning Bid)</td>
+                    <td>$<%= product.currentBid.toFixed(2) %></td>
+                </tr>
+                <tr>
+                    <td>Shipping & Handling</td>
+                    <td>$<%= (product.shippingFee || 0).toFixed(2) %></td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>Total<%= product.paymentStatus === 'pending' ? ' Due' : ' Paid' %></strong></td>
+                    <td><strong>$<%= (product.currentBid + (product.shippingFee || 0)).toFixed(2) %></strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="no-print action-buttons">
+            <button onclick="window.print()" class="btn-secondary">Print Receipt</button>
+            <br>
+            <a href="/" class="btn-primary">Return Home</a>
+        </div>
+    </div>
+</body>
+</html>

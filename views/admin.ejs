@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Umaina Co. — Admin</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('partials/dashboardBar', { user: user, stats: stats }) %>
+    <div class="container">
+        <a href="/webpage2" class="back">&larr; Back to Listings</a>
+
+        <div class="panel">
+            <h2>Add New Product</h2>
+            <form class="add-form" action="/api/admin/products/create" method="POST">
+                <input type="text" name="name" placeholder="Product name" required>
+                <input type="number" name="startingPrice" placeholder="Starting price" required min="1">
+                <input type="number" name="buyNowPrice" placeholder="Buy-now price (optional, default 2x start)" min="1">
+                <input type="number" name="durationHours" placeholder="Duration (hours)" required min="0.1" step="0.1">
+                <input type="text" name="imageUrl" placeholder="Image URL (optional)" style="width: 300px;">
+                <button type="submit">Add Product</button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <h2>Manage Products (<%= products.length %>)</h2>
+            <table>
+                <thead>
+                    <tr><th>Name</th><th>Seller</th><th>Start</th><th>Current</th><th>Buy Now</th><th>Status</th><th>Highest Bidder</th><th>Ends</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(function(p) { %>
+                        <tr>
+                            <td><%= p.name %></td>
+                            <td><%= p.sellerUsername || 'Admin' %></td>
+                            <td>$<%= p.startingPrice %></td>
+                            <td>$<%= p.currentBid %></td>
+                            <td>$<%= p.buyNowPrice %></td>
+                            <td><%= p.status %></td>
+                            <td><%= p.highestBidder || '-' %></td>
+                            <td><%= new Date(p.endTime).toLocaleString() %></td>
+                            <td class="actions">
+                                <a href="/admin/products/<%= p._id %>/edit" class="mini-btn">Edit</a>
+                                <% if (p.status === 'active') { %>
+                                <form action="/api/admin/products/<%= p._id %>/end-now" method="POST" style="display:inline">
+                                    <button class="mini-btn danger" type="submit">End Now</button>
+                                </form>
+                                <% } %>
+                                <form action="/api/admin/products/<%= p._id %>/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this product permanently?')">
+                                    <button class="mini-btn danger" type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel">
+            <h2>Manage Users (<%= users.length %>)</h2>
+            <table>
+                <thead>
+                    <tr><th>Username</th><th>Email</th><th>Admin?</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(function(u) { %>
+                        <tr>
+                            <td><%= u.username %></td>
+                            <td><%= u.email %></td>
+                            <td><%= u.isAdmin ? 'Yes' : 'No' %></td>
+                            <td class="actions">
+                                <form action="/api/admin/users/<%= u._id %>/toggle-admin" method="POST" style="display:inline">
+                                    <button class="mini-btn" type="submit"><%= u.isAdmin ? 'Revoke Admin' : 'Make Admin' %></button>
+                                </form>
+                                <form action="/api/admin/users/<%= u._id %>/delete" method="POST" style="display:inline" onsubmit="return confirm('Delete this user permanently?')">
+                                    <button class="mini-btn danger" type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= product.name %> - Live Auction</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <%- include('partials/dashboardBar', { user: user, stats: stats }) %>
+
+    <div class="auction-live">
+        <div class="wrap">
+            <a href="/webpage2" class="back-live">&larr; Back to Listings</a>
+
+            <div class="topbar">
+                <div class="eyebrow"><span class="pulse-dot"></span><%= product.status === 'active' ? 'Live floor' : 'Auction closed' %></div>
+            </div>
+            <h1><%= product.name %></h1>
+            <% if (product.sellerUsername) { %>
+                <p class="seller-tag">Seller: <%= product.sellerUsername %></p>
+            <% } else { %>
+                <p class="seller-tag">Official Listing</p>
+            <% } %>
+
+            <% if (product.imageUrl) { %>
+                <img class="live-product-img" src="<%= product.imageUrl %>" alt="<%= product.name %>">
+            <% } %>
+
+            <div class="panel">
+                <div class="bid-label">Current bid</div>
+                <div class="current-bid" id="current-bid">$<%= Number(product.currentBid).toLocaleString() %></div>
+
+                <div class="stat-row">
+                    <div class="stat-card">
+                        <div class="stat-label">Highest bidder</div>
+                        <div class="stat-value" id="highest-bidder"><%= product.highestBidder || 'No bids yet' %></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Bids placed</div>
+                        <div class="stat-value" id="bid-count"><%= product.bids.length %></div>
+                    </div>
+                </div>
+
+                <div class="stat-row" style="margin-top: 10px;">
+                    <div class="stat-card">
+                        <div class="stat-label">Buy it now</div>
+                        <div class="stat-value">$<%= Number(product.buyNowPrice).toLocaleString() %></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Time left</div>
+                        <div class="stat-value" id="timer-stat">
+                            <% if (product.status === 'active') { %>
+                                <span id="timer-box" data-endtime="<%= product.endTime.toISOString() %>">Loading...</span>
+                            <% } else { %>
+                                Ended
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="bid-section">
+                    <% if (user && product.status === 'active') { %>
+                        <form id="bid-form">
+                            <div class="bid-input-row">
+                                <input type="number" id="bid-amount" min="<%= product.currentBid + 1 %>" placeholder="Higher than $<%= Number(product.currentBid).toLocaleString() %>" required>
+                                <button type="submit">Place bid</button>
+                            </div>
+                        </form>
+                    <% } else if (!user) { %>
+                        <p class="login-note-live">You must <a href="/webpage1">log in</a> to place a bid.</p>
+                    <% } %>
+                </div>
+
+                <div id="timer-container"></div>
+            </div>
+
+            <div class="panel">
+                <div class="ledger-heading">
+                    <h2>Bid ledger</h2>
+                    <span id="ledger-total"><%= product.bids.length %> entries</span>
+                </div>
+                <ul id="bid-history">
+                    <% var sortedBids = product.bids.slice().reverse(); %>
+                    <% var totalBids = product.bids.length; %>
+                    <% if (sortedBids.length === 0) { %>
+                        <li class="ledger-empty">No bids placed yet. Be the first to open the floor.</li>
+                    <% } else { %>
+                        <% sortedBids.forEach(function(b, i) { %>
+                            <li class="ledger-row">
+                                <span class="ledger-num"><%= String(totalBids - i).padStart(3, '0') %></span>
+                                <span class="ledger-name"><%= b.username %></span>
+                                <span class="ledger-amount">$<%= Number(b.amount).toLocaleString() %></span>
+                            </li>
+                        <% }) %>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.productId = <%- JSON.stringify(product._id.toString()) %>;
+        window.productStatus = <%- JSON.stringify(product.status) %>;
+    </script>
+    <script src="/javascript/auctionPage.js"></script>
+</body>
+</html>

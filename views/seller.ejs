@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umaina Co. — Seller Console</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <%- include('partials/dashboardBar', { user: user, stats: stats }) %>
+
+    <div class="seller-console">
+        <div class="shell">
+            <a href="/webpage2" class="back">&larr; Back to Listings</a>
+
+            <div class="console-head">
+                <div>
+                    <h1>Seller console</h1>
+                    <p class="subhead">Manage the items you have listed for auction.</p>
+                </div>
+                <button class="btn-primary" id="btn-add-item">+ Add item</button>
+            </div>
+
+            <div class="stat-strip">
+                <div class="stat-block"><div class="k">Listed items</div><div class="v"><%= items.length %></div></div>
+                <div class="stat-block"><div class="k">Active</div><div class="v"><%= activeCount %></div></div>
+                <div class="stat-block"><div class="k">Total current bids</div><div class="v">$<%= totalRaised.toLocaleString() %></div></div>
+            </div>
+
+            <div class="panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Current bid</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-body">
+                        <% if (items.length === 0) { %>
+                            <tr><td colspan="4" class="empty-row">No items listed yet. Use "Add item" to create your first listing.</td></tr>
+                        <% } else { %>
+                            <% items.forEach(function(item) { %>
+                                <tr data-item-id="<%= item._id %>">
+                                    <td class="cell-item">
+                                        <div class="thumb">
+                                            <% if (item.imageUrl) { %>
+                                                <img src="<%= item.imageUrl %>" alt="">
+                                            <% } else { %>
+                                                <span class="thumb-empty">No image</span>
+                                            <% } %>
+                                        </div>
+                                        <div>
+                                            <div class="item-name"><%= item.name %></div>
+                                            <div class="item-id">#<%= String(item._id).slice(-6) %></div>
+                                        </div>
+                                    </td>
+                                    <td class="cell-bid">$<%= Number(item.currentBid).toLocaleString() %></td>
+                                    <td><span class="status-pill status-<%= item.status === 'active' ? 'active' : 'draft' %>"><%= item.status === 'active' ? 'Active' : (item.status === 'sold' ? 'Sold' : 'Ended') %></span></td>
+                                    <td class="cell-actions">
+                                        <button class="btn-icon btn-upload" data-action="upload" title="Upload image">Upload</button>
+                                        <button class="btn-icon btn-remove" data-action="remove" title="Remove item">Remove</button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Add item modal -->
+        <div class="overlay" id="add-overlay">
+            <div class="modal">
+                <h3>Add item</h3>
+                <form id="add-form">
+                    <div class="field">
+                        <label for="add-name">Item name</label>
+                        <input type="text" id="add-name" required>
+                    </div>
+                    <div class="field">
+                        <label for="add-desc">Description</label>
+                        <textarea id="add-desc"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="add-price">Starting bid ($)</label>
+                        <input type="number" id="add-price" min="0" step="0.01" required>
+                    </div>
+                    <div class="field">
+                        <label for="add-duration">Auction duration (hours)</label>
+                        <input type="number" id="add-duration" min="0.5" step="0.5" value="24" required>
+                    </div>
+                    <div class="field">
+                        <label for="add-image">Photo (optional)</label>
+                        <input type="file" id="add-image" accept="image/*">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-ghost" data-close="add-overlay">Cancel</button>
+                        <button type="submit" class="btn-primary">Create listing</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Upload image modal -->
+        <div class="overlay" id="upload-overlay">
+            <div class="modal">
+                <h3>Upload image</h3>
+                <form id="upload-form">
+                    <div class="field">
+                        <label for="upload-file">Image file</label>
+                        <input type="file" id="upload-file" accept="image/*" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-ghost" data-close="upload-overlay">Cancel</button>
+                        <button type="submit" class="btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="/javascript/sellerDashboard.js"></script>
+</body>
+</html>
