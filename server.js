@@ -18,7 +18,7 @@ const checkoutRoutes = require('./routes/checkoutRoutes');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 connectDB();
 
